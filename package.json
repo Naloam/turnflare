@@ -1,0 +1,57 @@
+{
+  "name": "turnflare",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Local Claude Code session, subagent and token cost explorer",
+  "packageManager": "pnpm@10.33.0",
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "scripts": {
+    "build": "pnpm -r --filter \"@turnflare/*\" build",
+    "test": "pnpm -r --filter \"@turnflare/*\" test",
+    "test:watch": "pnpm -r --filter \"@turnflare/*\" test:watch",
+    "typecheck": "pnpm -r --filter \"@turnflare/*\" typecheck",
+    "lint": "eslint packages --ext .ts,.tsx",
+    "contracts": "node tools/check-contracts.mjs",
+    "clean": "pnpm -r --filter \"@turnflare/*\" exec rm -rf dist node_modules/.cache",
+    "api": "pnpm --filter @turnflare/api dev",
+    "web": "pnpm --filter @turnflare/web dev",
+    "cli": "pnpm --filter @turnflare/cli start",
+    "bench": "node tools/bench-parse.mjs",
+    "test:e2e": "pnpm build && pnpm --filter @turnflare/web exec playwright test",
+    "start": "pnpm build && node tools/start-runtime.mjs",
+    "demo": "pnpm build && node tools/demo-server.mjs",
+    "test:tools": "node --test tools/*.test.mjs",
+    "check": "pnpm build && pnpm typecheck && pnpm contracts && pnpm lint && pnpm test && pnpm test:tools",
+    "release:pack": "pnpm build && node tools/package.mjs",
+    "verify:package": "pnpm release:pack && node tools/verify-package.mjs"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.0",
+    "@playwright/test": "^1.64.1",
+    "@types/node": "^24.10.1",
+    "@vitest/coverage-v8": "^3.2.4",
+    "esbuild": "0.28.2",
+    "eslint": "^9.39.0",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "playwright": "^1.64.1",
+    "prettier": "^3.6.2",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.46.0",
+    "vitest": "^3.2.4"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "better-sqlite3",
+      "esbuild"
+    ]
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Naloam/turnflare.git"
+  },
+  "homepage": "https://github.com/Naloam/turnflare#readme"
+}

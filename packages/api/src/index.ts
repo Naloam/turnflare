@@ -1,0 +1,13 @@
+/** Public Node.js interface. Internal file layout is not part of the contract. */
+export { loadConfig, ConfigError } from './config.js'
+export type { AppConfig } from './config.js'
+export { openDatabase } from './db/index.js'
+export { createRepository } from './db/repository.js'
+export type { SessionRepository } from './db/repository.js'
+export { Scanner } from './scanner/index.js'
+export type { ScanInput, ScanOutcome } from './scanner/index.js'
+export { collectReportData, renderReport } from './report/index.js'
+export type { ReportPayload, RenderedReport } from './report/index.js'
+export { buildApp, start } from './server.js'
+export type { BuildAppDeps } from './server.js'
+export type * from './types.js'

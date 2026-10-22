@@ -1,0 +1,72 @@
+@import 'tailwindcss';
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-sans: 'Inter', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', 'SF Mono', ui-monospace, monospace;
+
+  --color-surface-0: oklch(98.5% 0.002 250);
+  --color-surface-1: oklch(100% 0 0);
+  --color-surface-2: oklch(96% 0.004 250);
+  --color-border-subtle: oklch(90% 0.006 250);
+  --color-ink-1: oklch(22% 0.01 250);
+  --color-ink-2: oklch(45% 0.01 250);
+  --color-ink-3: oklch(62% 0.008 250);
+
+  --color-accent: oklch(58% 0.17 45);
+  --color-accent-soft: oklch(95% 0.035 45);
+  --color-positive: oklch(62% 0.15 155);
+  --color-warning: oklch(72% 0.15 75);
+  --color-danger: oklch(58% 0.2 25);
+
+  --radius-card: 0.875rem;
+}
+
+@layer base {
+  :root {
+    color-scheme: light;
+  }
+
+  .dark {
+    color-scheme: dark;
+    --color-surface-0: oklch(17% 0.008 255);
+    --color-surface-1: oklch(21% 0.009 255);
+    --color-surface-2: oklch(25% 0.01 255);
+    --color-border-subtle: oklch(30% 0.012 255);
+    --color-ink-1: oklch(95% 0.004 250);
+    --color-ink-2: oklch(72% 0.008 250);
+    --color-ink-3: oklch(58% 0.01 250);
+    --color-accent: oklch(75% 0.15 45);
+    --color-accent-soft: oklch(29% 0.055 45);
+    /* 深色模式提高语义色明度，保持文字和图表的对比度。 */
+    --color-positive: oklch(72% 0.16 155);
+    --color-warning: oklch(80% 0.15 75);
+    --color-danger: oklch(70% 0.2 25);
+  }
+
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+
+  body {
+    @apply bg-surface-0 text-ink-1 font-sans antialiased;
+    margin: 0;
+  }
+
+  * {
+    border-color: var(--color-border-subtle);
+  }
+}
+
+@layer components {
+  .card {
+    @apply bg-surface-1 border border-border-subtle rounded-[var(--radius-card)];
+  }
+
+  .focus-ring {
+    @apply outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-surface-0;
+  }
+}

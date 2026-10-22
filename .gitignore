@@ -1,0 +1,23 @@
+node_modules/
+dist/
+coverage/
+*.tsbuildinfo
+.DS_Store
+.env
+.env.*
+!.env.example
+*.log
+.vite/
+.turbo/
+playwright-report/
+test-results/
+
+# Local indexes and pre-publication personal screenshots
+*.db
+*.db-wal
+*.db-shm
+*.sqlite
+release/
+screenshots/sessions-dark.png
+screenshots/overview.png
+screenshots/chain-filter.png

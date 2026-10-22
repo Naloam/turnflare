@@ -1,0 +1,34 @@
+{
+  "name": "@turnflare/cli",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Turnflare \u547d\u4ee4\u884c\u5de5\u5177\uff1a\u626b\u63cf\u3001\u7edf\u8ba1\u3001\u62a5\u544a\u5bfc\u51fa",
+  "bin": {
+    "turnflare": "./dist/bin.js"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "start": "tsx src/bin.ts",
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage"
+  },
+  "dependencies": {
+    "@turnflare/api": "workspace:*",
+    "@turnflare/core": "workspace:*",
+    "cli-progress": "^3.12.0",
+    "cli-table3": "^0.6.5",
+    "picocolors": "^1.1.1"
+  },
+  "devDependencies": {
+    "@types/cli-progress": "^3.11.6",
+    "@types/node": "^24.10.1",
+    "tsx": "^4.23.15",
+    "typescript": "^5.9.3",
+    "vitest": "^3.2.4"
+  },
+  "license": "MIT",
+  "engines": {
+    "node": ">=22.0.0"
+  }
+}

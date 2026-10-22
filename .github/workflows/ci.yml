@@ -1,0 +1,119 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [22, 24]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: pnpm
+
+      - name: 安装依赖
+        run: pnpm install --frozen-lockfile
+
+      - name: 构建全部包（按 workspace 依赖顺序）
+        run: pnpm build
+
+      - name: 类型检查
+        run: pnpm typecheck
+
+      - name: 契约一致性校验
+        run: pnpm contracts
+
+      - name: Lint
+        run: pnpm lint
+
+      # 四个包的单元测试全跑。只挑其中一两个跑等于没门禁：
+      # 另外两个包可以整体坏掉而 CI 保持绿色。
+      - name: core 单元测试（含覆盖率阈值）
+        run: pnpm --filter @turnflare/core test:coverage
+
+      - name: api 单元测试（含覆盖率阈值）
+        run: pnpm --filter @turnflare/api test:coverage
+
+      - name: cli 单元测试
+        run: pnpm --filter @turnflare/cli test
+
+      # web 的单测与 E2E 都不能省：只跑 vite build 的话，
+      # 组件逻辑（比如"无价目模型时显示警告"）坏了也没人知道。
+      - name: web 单元测试（含覆盖率阈值）
+        run: pnpm --filter @turnflare/web test:coverage
+
+      - name: CLI 冒烟测试
+        run: |
+          pnpm --filter @turnflare/cli build
+          node packages/cli/dist/bin.js --help
+          node packages/cli/dist/bin.js models
+
+      - name: 示例数据集成测试
+        run: pnpm test:tools
+
+      - name: 全管线演示（示例数据 + 11 条断言）
+        run: node tools/demo.mjs
+
+      # 性能基准：CI 机器比本地慢，阈值放得比实测宽 3 倍左右。
+      # 超阈值不一定是回归（机器差异、磁盘冷热都会有影响），但值得看一眼。
+      - name: 解析性能基准
+        run: node tools/bench-parse.mjs --json
+
+  e2e:
+    runs-on: ubuntu-latest
+    needs: verify
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - name: 安装依赖
+        run: pnpm install --frozen-lockfile
+
+      - name: 安装 Playwright 浏览器
+        run: pnpm --filter @turnflare/web exec playwright install --with-deps chromium
+
+      - name: 构建全部包
+        run: pnpm build
+
+      # 单地址的生产构建，示例数据与内存数据库，不读取开发者会话。
+      - name: Playwright E2E
+        run: pnpm --filter @turnflare/web exec playwright test
+
+      - name: Verify installed release
+        run: pnpm verify:package
+
+      - name: 上传失败痕迹
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: packages/web/test-results/
+          retention-days: 7

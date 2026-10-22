@@ -1,0 +1,23 @@
+name: Bug report
+description: Report incorrect usage, a parsing failure or a broken workflow.
+title: '[Bug]: '
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What happened?
+      description: Include what you expected and what you saw.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: How can we reproduce it?
+      description: Commands, Node version, operating system, and a synthetic example if possible. Remove private session text and paths.
+    validations:
+      required: true
+  - type: textarea
+    id: comparison
+    attributes:
+      label: For usage discrepancies
+      description: Which model, time range, timezone and chain filter did you compare? Is the other number an API estimate or an actual invoice?

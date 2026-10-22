@@ -1,0 +1,19 @@
+{
+  // 仅供 ESLint 使用：把测试文件与工具脚本也纳入一个工程，
+  // 让 typescript-eslint 的类型规则对它们生效。
+  // 各包的 tsconfig.json 刻意排除 *.test.ts（构建产物不该带测试），
+  // 因此 projectService 找不到对应工程时会回退到本文件。
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "types": ["node"]
+  },
+  "include": [
+    "packages/*/src/**/*.ts",
+    "packages/*/src/**/*.tsx",
+    "packages/*/e2e/**/*.ts",
+    "packages/*/*config.ts",
+    "eslint.config.js",
+    "tools/**/*.ts"
+  ]
+}

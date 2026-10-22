@@ -1,0 +1,25 @@
+{
+  "name": "@turnflare/contracts",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Type-only domain and HTTP contracts for Turnflare",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts"
+    },
+    "./domain": {
+      "types": "./dist/domain.d.ts"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3"
+  },
+  "license": "MIT"
+}
