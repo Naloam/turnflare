@@ -50,16 +50,7 @@ for (const pkg of ['api', 'cli']) {
     }
   }
 }
-writeFileSync(
-  path.join(runtime, 'turnflare.mjs'),
-  `#!/usr/bin/env node
-const command = process.argv[2]
-if (command === 'demo' || command === 'start') {
-  process.argv.splice(2, 1)
-  await import(command === 'demo' ? './demo.mjs' : './start.mjs')
-} else await import('./cli.mjs')
-`,
-)
+cpSync(path.join(root, 'tools/installed-entry.mjs'), path.join(runtime, 'turnflare.mjs'))
 chmodSync(path.join(runtime, 'turnflare.mjs'), 0o755)
 writeFileSync(
   path.join(directory, 'package.json'),

@@ -81,6 +81,23 @@ try {
   })
   assert.equal(info.status, 0, info.stderr)
   assert.match(info.stdout, /turnflare/)
+  for (const command of ['demo', 'start']) {
+    const help = spawnSync(process.execPath, [executable, command, '--help'], {
+      cwd: directory,
+      encoding: 'utf8',
+      timeout: 3000,
+      env: {
+        ...process.env,
+        TURNFLARE_LANG: 'en',
+        TURNFLARE_DATA_ROOT: sample,
+        TURNFLARE_DB: ':memory:',
+        PORT: '19897',
+      },
+    })
+    assert.equal(help.error, undefined, `${command} --help must return immediately`)
+    assert.equal(help.status, 0, `${command} --help must show usage without starting a server`)
+    assert.match(help.stdout, new RegExp(`turnflare ${command}`))
+  }
   let url = await launch('demo')
   const health = await (await fetch(`${url}/api/health`)).json()
   assert.equal(health.data.sessionCount, 9)
