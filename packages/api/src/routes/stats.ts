@@ -10,7 +10,7 @@ import type { FastifyInstance } from 'fastify'
 import type { SessionRepository } from '../db/repository.js'
 import type { TimelinePayload } from '../types.js'
 import { ApiError } from '../plugins/error-handler.js'
-import { parseTimelineQuery } from '../schemas/index.js'
+import { parseUsageQuery, parseTimelineQuery } from '../schemas/index.js'
 import { sendData } from './envelope.js'
 
 export interface StatsRouteDeps {
@@ -18,6 +18,16 @@ export interface StatsRouteDeps {
 }
 
 export function registerStatsRoutes(app: FastifyInstance, deps: StatsRouteDeps): void {
+  app.get('/api/stats/analytics/options', async (_request, reply) =>
+    sendData(reply, deps.repo.getAnalyticsOptions()),
+  )
+
+  app.get('/api/stats/analytics', async (request, reply) => {
+    const query = parseUsageQuery(request.query)
+    if (!query.ok) throw new ApiError(400, query.error)
+    return sendData(reply, deps.repo.getAnalytics(query.value))
+  })
+
   app.get('/api/stats/overview', async (_request, reply) => {
     return sendData(reply, deps.repo.getOverview())
   })

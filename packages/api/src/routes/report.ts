@@ -8,7 +8,7 @@
 import type { FastifyInstance } from 'fastify'
 import type { SessionRepository } from '../db/repository.js'
 import { ApiError } from '../plugins/error-handler.js'
-import { parseReportFormat } from '../schemas/index.js'
+import { parseUsageQuery, parseReportFormat } from '../schemas/index.js'
 import { collectReportData, renderReport } from '../report/index.js'
 
 export interface ReportRouteDeps {
@@ -21,7 +21,14 @@ export function registerReportRoutes(app: FastifyInstance, deps: ReportRouteDeps
     if (!parsed.ok) {
       throw new ApiError(400, parsed.error)
     }
-    const payload = collectReportData(deps.repo, new Date().toISOString())
+    const filters = parseUsageQuery(request.query)
+    if (!filters.ok) throw new ApiError(400, filters.error)
+    const hasFilters = Object.keys(filters.value).length > 0
+    const payload = collectReportData(
+      deps.repo,
+      new Date().toISOString(),
+      hasFilters ? filters.value : undefined,
+    )
     const rendered = renderReport(payload, parsed.value)
     return reply.type(rendered.contentType).send(rendered.body)
   })

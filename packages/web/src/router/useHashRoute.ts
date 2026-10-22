@@ -30,7 +30,13 @@ interface ResolvedRoute {
 }
 
 /** 支持的路由表，顺序即匹配优先级 */
-const ROUTE_PATTERNS: readonly string[] = ['/overview', '/sessions', '/sessions/:id', '/projects']
+const ROUTE_PATTERNS: readonly string[] = [
+  '/overview',
+  '/analytics',
+  '/sessions',
+  '/sessions/:id',
+  '/projects',
+]
 
 /** 无法识别时的落点 */
 const FALLBACK_PATH = '/overview'
@@ -61,9 +67,9 @@ function parseQuery(search: string): Record<string, string> {
     const separatorIndex = pair.indexOf('=')
     const rawKey = separatorIndex === -1 ? pair : pair.slice(0, separatorIndex)
     const rawValue = separatorIndex === -1 ? '' : pair.slice(separatorIndex + 1)
-    const key = decodeSegment(rawKey)
+    const key = decodeSegment(rawKey.replaceAll('+', ' '))
     if (key.length > 0) {
-      params[key] = decodeSegment(rawValue)
+      params[key] = decodeSegment(rawValue.replaceAll('+', ' '))
     }
   }
   return params

@@ -16,7 +16,7 @@ import {
   formatWithThousandsSeparator,
   usageTotal,
 } from '@turnflare/core'
-import type { AggregatedStats, ModelStats, ProjectStats, TimeBucket, ToolStats } from '../types.js'
+import type { ModelStats, ProjectStats, TimeBucket, ToolStats } from '../types.js'
 import type { ReportPayload, RenderedReport } from './index.js'
 
 const HTML_CONTENT_TYPE = 'text/html; charset=utf-8'
@@ -156,7 +156,7 @@ function toTable(headers: readonly string[], rows: readonly (readonly string[])[
   return `<table>${head}${body}</table>`
 }
 
-function toKpis(overview: AggregatedStats): string {
+function toKpis(overview: ReportPayload['overview']): string {
   const kpis: readonly (readonly [string, string])[] = [
     ['总会话数', formatWithThousandsSeparator(overview.sessionCount)],
     ['对话轮次', formatWithThousandsSeparator(overview.turnCount)],
@@ -230,6 +230,9 @@ export function renderHtmlReport(payload: ReportPayload): RenderedReport {
   const sections: readonly string[] = [
     `<h1>${PAGE_TITLE}</h1>`,
     `<p class="generated">生成时间：${escapeHtml(payload.generatedAt)}</p>`,
+    ...(payload.filters === undefined
+      ? []
+      : [`<p>Filters (UTC, until exclusive): ${escapeHtml(JSON.stringify(payload.filters))}</p>`]),
     toKpis(payload.overview),
     '<h2>每日成本趋势</h2>',
     renderChart(payload.timeline),

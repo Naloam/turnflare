@@ -1,3 +1,6 @@
+import type { ReportFormat } from './domain.js'
+import type { UsageQuery } from './analytics.js'
+
 /** The renderer receives only these capabilities, never raw Electron or filesystem access. */
 export interface DesktopState {
   readonly mode: 'local' | 'demo'
@@ -8,6 +11,7 @@ export interface DesktopState {
 }
 
 export interface DesktopBridge {
+  saveReport(format: ReportFormat, filters: UsageQuery): Promise<boolean>
   getState(): Promise<DesktopState>
   chooseFolder(): Promise<void>
   showDemo(): Promise<void>

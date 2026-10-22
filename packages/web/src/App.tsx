@@ -1,6 +1,7 @@
 import { ErrorBoundary } from './components/ErrorBoundary'
 import { Layout } from './components/Layout'
 import { EmptyState } from './components/EmptyState'
+import { AnalyticsPage } from './pages/AnalyticsPage'
 import { OverviewPage } from './pages/OverviewPage'
 import { ProjectsPage } from './pages/ProjectsPage'
 import { SessionDetailPage } from './pages/SessionDetailPage'
@@ -21,6 +22,8 @@ export interface RouteViewProps {
  */
 export function RouteView({ path, params }: RouteViewProps) {
   switch (path) {
+    case '/analytics':
+      return <AnalyticsPage />
     case '/overview':
       return <OverviewPage />
     case '/sessions':

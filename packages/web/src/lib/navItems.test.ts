@@ -2,8 +2,13 @@ import { describe, expect, test } from 'vitest'
 import { isNavItemActive, NAV_ITEMS } from './navItems'
 
 describe('NAV_ITEMS', () => {
-  test('三个入口，顺序固定', () => {
-    expect(NAV_ITEMS.map((item) => item.to)).toEqual(['/overview', '/sessions', '/projects'])
+  test('四个入口，顺序固定', () => {
+    expect(NAV_ITEMS.map((item) => item.to)).toEqual([
+      '/overview',
+      '/analytics',
+      '/sessions',
+      '/projects',
+    ])
   })
 })
 

@@ -21,6 +21,8 @@
  *   2. 自洽 —— 所有聚合数字都从同一批 turn 行推导，会话级与分组级永远对得上。
  */
 
+import { readAnalyticsOptions, readAnalytics } from './analytics.js'
+import type { AnalyticsOptions, AnalyticsPayload, UsageQuery } from '../types.js'
 import type Database from 'better-sqlite3'
 import type { Session, Turn } from '@turnflare/core'
 import type {
@@ -70,6 +72,8 @@ export interface SessionRepository {
   mergeSessionTurns(sessionId: string, turns: readonly Turn[], meta?: SessionTimeRange): void
   getSession(sessionId: string, chain?: SessionChain, page?: number): SessionDetail | null
   listSessions(query: SessionsQuery): { items: SessionListItem[]; total: number }
+  getAnalyticsOptions(): AnalyticsOptions
+  getAnalytics(query: UsageQuery): AnalyticsPayload
   getOverview(): AggregatedStats
   getModelStats(): readonly ModelStats[]
   getProjectStats(): readonly ProjectStats[]
@@ -91,6 +95,8 @@ export function createRepository(db: Database.Database): SessionRepository {
     mergeSessionTurns: createMergeSessionTurns(deps),
     getSession: (sessionId, chain, page) => readSessionDetail(deps, sessionId, chain, page),
     listSessions: (query) => readSessionsPage(deps, query),
+    getAnalyticsOptions: () => readAnalyticsOptions(deps),
+    getAnalytics: (query) => readAnalytics(deps, query),
     getOverview: () => readOverview(deps),
     getModelStats: () => readModelStats(deps),
     getProjectStats: () => readProjectStats(deps),

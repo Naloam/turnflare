@@ -29,7 +29,7 @@ import {
 } from './usage.js'
 
 /** 配置读不出来时的版本兜底；只在 PORT 等配置写错时才会出现 */
-const FALLBACK_VERSION = '0.2.0'
+const FALLBACK_VERSION = '0.2.1'
 
 function readVersion(ctx: CliContext, deps: CliDeps): string {
   try {

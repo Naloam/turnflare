@@ -7,7 +7,7 @@
  */
 
 import { formatCost, formatPercent, formatWithThousandsSeparator } from '@turnflare/core'
-import type { AggregatedStats, ModelStats, ProjectStats, ToolStats } from '../types.js'
+import type { ModelStats, ProjectStats, ToolStats } from '../types.js'
 import type { ReportPayload, RenderedReport } from './index.js'
 
 const MARKDOWN_CONTENT_TYPE = 'text/markdown; charset=utf-8'
@@ -49,7 +49,7 @@ function toTokenCell(value: number): string {
   return formatWithThousandsSeparator(value)
 }
 
-function renderOverviewTable(overview: AggregatedStats): string {
+function renderOverviewTable(overview: ReportPayload['overview']): string {
   const rows: readonly (readonly string[])[] = [
     ['总会话数', toTokenCell(overview.sessionCount)],
     ['对话轮次', toTokenCell(overview.turnCount)],
@@ -144,6 +144,9 @@ export function renderMarkdownReport(payload: ReportPayload): RenderedReport {
     `# ${REPORT_TITLE}`,
     '',
     `- 生成时间：${toCell(payload.generatedAt)}`,
+    ...(payload.filters === undefined
+      ? []
+      : [`- Filters (UTC, until exclusive): ${toCell(JSON.stringify(payload.filters))}`]),
     `- 会话数：${toTokenCell(payload.overview.sessionCount)}`,
     `- 总成本：${formatCost(payload.overview.cost.totalCost)}`,
     '',

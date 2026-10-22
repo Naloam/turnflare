@@ -45,13 +45,26 @@ export function SessionsPage() {
   const [order, setOrder] = useState<SessionOrder>('desc')
   const [page, setPage] = useState<number>(1)
 
-  const query = buildSessionsQuery({ page, project, sort, order })
+  const search = params.search ?? ''
+  const model = params.model ?? ''
+  const [draftSearch, setDraftSearch] = useState(search)
+  useEffect(() => setDraftSearch(search), [search])
+  const updateFilter = (key: string, value: string) => {
+    const next = new URLSearchParams()
+    if (project) next.set('project', project)
+    if (model) next.set('model', model)
+    if (search) next.set('search', search)
+    if (value.trim()) next.set(key, value.trim())
+    else next.delete(key)
+    navigate(next.size > 0 ? `/sessions?${next.toString()}` : '/sessions')
+  }
+  const query = buildSessionsQuery({ page, project, sort, order, search, model })
   const sessions = useApi<readonly SessionListItem[]>(`/sessions${query}`)
 
   // 切换项目筛选时回到第一页，否则会停在一个不属于新筛选结果的页码上
   useEffect(() => {
     setPage(1)
-  }, [project])
+  }, [project, search, model])
 
   // 服务端对越界页码返回空数组，此时回退一页而不是把用户留在空白表格里
   useEffect(() => {
@@ -81,6 +94,53 @@ export function SessionsPage() {
 
   return (
     <div className="space-y-4">
+      <form
+        className="card flex flex-wrap items-end gap-3 p-3"
+        onSubmit={(event) => {
+          event.preventDefault()
+          updateFilter('search', draftSearch)
+        }}
+      >
+        <label className="grid min-w-64 flex-1 gap-1 text-xs text-ink-2">
+          {t('索引预览搜索')}
+          <input
+            className="focus-ring rounded-lg border border-border-subtle bg-surface-1 px-3 py-2 text-sm text-ink-1"
+            type="search"
+            maxLength={200}
+            value={draftSearch}
+            onChange={(e) => setDraftSearch(e.target.value)}
+            placeholder={t('会话 ID、项目、路径、分支或消息预览')}
+          />
+        </label>
+        <label className="grid gap-1 text-xs text-ink-2">
+          {t('模型')}
+          <select
+            className="focus-ring rounded-lg border border-border-subtle bg-surface-1 px-3 py-2 text-sm text-ink-1"
+            value={model}
+            onChange={(e) => updateFilter('model', e.target.value)}
+          >
+            <option value="">{t('全部')}</option>
+            {overview.data?.byModel.map((m) => (
+              <option key={m.model}>{m.model}</option>
+            ))}
+          </select>
+        </label>
+        <button className="focus-ring rounded-lg border border-border-subtle px-3 py-2 text-sm">
+          {t('搜索')}
+        </button>
+        {search || model ? (
+          <button
+            type="button"
+            className="focus-ring px-2 py-2 text-sm text-ink-2"
+            onClick={() =>
+              navigate(project ? `/sessions?project=${encodeURIComponent(project)}` : '/sessions')
+            }
+          >
+            {t('清除搜索')}
+          </button>
+        ) : null}
+        <p className="w-full text-xs text-ink-3">{t('检索每条消息前 200 字及会话元信息')}</p>
+      </form>
       <div className="flex flex-wrap items-center gap-3">
         <SessionFilters
           projects={projects}
@@ -88,7 +148,7 @@ export function SessionsPage() {
           sort={sort}
           order={order}
           onProjectChange={(next) => {
-            navigate(next === null ? '/sessions' : `/sessions?project=${encodeURIComponent(next)}`)
+            updateFilter('project', next ?? '')
           }}
           onSortChange={setSort}
           onOrderToggle={() => {

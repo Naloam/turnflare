@@ -7,7 +7,7 @@
  * 数字保持原始精度（不加千分位、不四舍五入），这样拉进表格还能继续算。
  */
 
-import type { AggregatedStats, ModelStats, ProjectStats, ToolStats } from '../types.js'
+import type { ModelStats, ProjectStats, ToolStats } from '../types.js'
 import type { ReportPayload, RenderedReport } from './index.js'
 
 const CSV_CONTENT_TYPE = 'text/csv; charset=utf-8'
@@ -69,7 +69,10 @@ function toSection(
   return [toRow([title]), toRow(header), ...body.map(toRow), '']
 }
 
-function toOverviewRows(overview: AggregatedStats, generatedAt: string): readonly CsvCell[][] {
+function toOverviewRows(
+  overview: ReportPayload['overview'],
+  generatedAt: string,
+): readonly CsvCell[][] {
   return [
     ['生成时间', generatedAt],
     ['总会话数', overview.sessionCount],
@@ -120,6 +123,13 @@ function toToolRows(tools: readonly ToolStats[]): readonly CsvCell[][] {
 /** 渲染 CSV 报表（带 BOM） */
 export function renderCsvReport(payload: ReportPayload): RenderedReport {
   const sections: readonly string[] = [
+    ...(payload.filters === undefined
+      ? []
+      : toSection(
+          'Filters (UTC, until exclusive)',
+          ['Field', 'Value'],
+          Object.entries(payload.filters),
+        )),
     ...toSection('总览', ['指标', '数值'], toOverviewRows(payload.overview, payload.generatedAt)),
     ...toSection(
       '模型分布',

@@ -328,3 +328,31 @@
 | `TURNFLARE_MAX_FILE_BYTES`   | `52428800`                      | 单文件大小上限（50MB）       |
 | `TURNFLARE_SCAN_CONCURRENCY` | `4`                             | 扫描并发度                   |
 | `LOG_LEVEL`                  | `info`                          | 日志级别                     |
+
+
+## Filtered analytics (v0.2.1)
+
+`GET /api/stats/analytics?chain=all&since=2026-10-01&until=2026-11-01`
+
+Optional filters: `chain=main|side|all` (default main), `since`, `until`, `project`, `model`.
+Bounds apply to each turn, not whole sessions; since is inclusive and until exclusive.
+Dates are UTC; ISO timestamps with offsets are normalized to UTC. Invalid/reversed bounds return 400.
+The GUI's inclusive end date is converted to the next UTC midnight before this request.
+Response data has `filters`, `sessionCount`, `turnCount`, `requestCount`, `usage`, `cost`,
+`models`, `projects`, `days`, `tools`, `cacheHitRate`, `errorRate`, and activity timestamps.
+Every dimension uses the same selected turns, with fast/standard pricing calculated separately.
+Session counts include only sessions with matching turns. Requests with missing timestamps
+remain in all-time totals but cannot appear in time charts. Server-tool counts are unavailable
+at turn granularity in the current index and remain zero in this view.
+
+`GET /api/stats/analytics/options` returns sorted `projects` and `models` selector lists,
+including models found only in subagents, without calculating the complete analytics report.
+
+`GET /api/report?format=json&chain=side&since=2026-10-01&until=2026-11-01`
+accepts the same filters and includes their normalized metadata in all four output formats.
+Omitting every filter preserves the original all-time main-conversation report behavior.
+
+`GET /api/sessions?search=keyword&model=...` adds literal, ASCII-case-insensitive substring
+search over session ID, project, path, branch and each message's indexed 200-character preview.
+Percent and underscore characters are literal. The 200-character search limit is validated.
+List costs remain whole-session main-conversation estimates, not a cost attributed to matching text.

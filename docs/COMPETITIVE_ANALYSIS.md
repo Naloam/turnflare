@@ -75,3 +75,24 @@ star 是结果指标，不能承诺数量。
 
 新增功能包括可安装的 GitHub Release、英中文界面和命令帮助、每链分页、默认每 10 秒增量扫描、
 可暂停的页面自动刷新。没有把本地估算伪装成官方订阅额度或实际账单。
+
+
+## v0.2.1 功能对齐（2026-10-22）
+
+本轮核对了以下主分支 README、相关实现和 MIT LICENSE，采用功能思路，未复制源码或新增运行时依赖。
+
+| 参考 | 已借鉴并交付 | 仍有差距 |
+| --- | --- | --- |
+| [ccusage](https://github.com/ccusage/ccusage/blob/main/apps/ccusage/README.md) | 日期筛选、日/周/月报 | 自定义时区、多 provider、statusline |
+| [claude-view](https://github.com/tombelieber/claude-view/blob/main/README.md) | 活动热图、工具排行、界面导出 | 全文检索、subagent 树 |
+| [claude-code-sessions](https://github.com/kmizzi/claude-code-sessions/blob/master/README.md) | 模型筛选、元信息/预览搜索、周期明细 | FTS5 全文和可选语义检索 |
+| [claude-dashboard](https://github.com/uppinote20/claude-dashboard/blob/main/README.md) | 本机预算和 80%/95%/超额提示 | 固定日/月预算与编码界面的常驻入口 |
+| [Usage Monitor](https://github.com/Maciek-roboblog/Claude-Code-Usage-Monitor/blob/main/README.md) | 明确区分成本估算与官方额度 | 官方 statusline rate_limits 接入、来源和失效状态、预测 |
+
+本版统一的是分析页的 turn 时间、项目、模型与链范围，四种导出和所有分析图表遵循同一范围。
+旧总览仍保留主对话与侧链并列的语义。工具只展示次数、错误和结果字符数，不猜测单工具成本。
+搜索仅覆盖当前持有的 200 字预览和元信息，没有把预览检索宣传成全文检索。
+
+预算是用户为当前筛选设置的 API 等价成本预算，不是 Claude 订阅额度；日期按 UTC，周一为每周起点。
+与竞品相比，下载即可启动的 Windows/macOS 应用和链范围一致的导出是目前的便利性优势；
+数据源广度、官方额度、全文检索、签名公证和社区积累仍是短板。功能研究未包含竞品安装或性能实测。

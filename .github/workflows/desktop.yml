@@ -105,6 +105,6 @@ jobs:
           if gh release view "$tag" --json isDraft --jq .isDraft > /tmp/turnflare-draft; then
             test "$(cat /tmp/turnflare-draft)" = true || { echo 'Published release is immutable; leaving its downloads unchanged'; exit 0; }
           else
-            gh release create "$tag" --draft --target "$GITHUB_SHA" --title "Turnflare $tag — Desktop apps" --notes-file "docs/releases/$version.md"
+            gh release create "$tag" --draft --target "$GITHUB_SHA" --title "Turnflare $tag" --notes-file "docs/releases/$version.md"
           fi
           gh release upload "$tag" release/final/* --clobber

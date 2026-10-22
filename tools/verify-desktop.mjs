@@ -79,6 +79,40 @@ try {
   await page.screenshot({
     path: path.join(root, `release/desktop-smoke-${process.platform}-${process.arch}.png`),
   })
+  // Verify the renderer-to-main save capability in the packaged application.
+  await page.goto('turnflare://app/#/analytics')
+  await page.getByText('Tool activity', { exact: true }).waitFor()
+  await page.getByLabel('Scope').selectOption('side')
+  await page.getByLabel('Report format').selectOption('json')
+  await page.getByRole('button', { name: 'Export selected data' }).waitFor({ state: 'visible' })
+  const savedReport = path.join(directory, 'filtered-report.json')
+  await application.evaluate(({ dialog }, filePath) => {
+    dialog.showSaveDialog = async () => ({ canceled: false, filePath })
+  }, savedReport)
+  await page.getByRole('button', { name: 'Export selected data' }).click()
+  await page.getByText('Report saved', { exact: true }).waitFor()
+  const report = JSON.parse(readFileSync(savedReport, 'utf8')).data
+  assert.equal(report.filters.chain, 'side')
+  const analytics = await page.evaluate(
+    async () => (await (await fetch('/api/stats/analytics?chain=side')).json()).data,
+  )
+  assert.equal(report.overview.cost.totalCost, analytics.cost.totalCost)
+  await application.evaluate(({ dialog }) => {
+    dialog.showSaveDialog = async () => ({ canceled: true })
+  })
+  assert.equal(
+    await page.evaluate(() => window.turnflareDesktop.saveReport('csv', { chain: 'main' })),
+    false,
+  )
+  const invalidSave = await page.evaluate(async () => {
+    try {
+      await window.turnflareDesktop.saveReport('exe', {})
+      return false
+    } catch {
+      return true
+    }
+  })
+  assert.equal(invalidSave, true)
   const selectedFolder = path.join(directory, 'another-history')
   mkdirSync(selectedFolder)
   await application.evaluate(({ dialog }, folder) => {

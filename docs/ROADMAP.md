@@ -27,10 +27,28 @@ try, trustworthy and worth returning to. Checked items are delivered; unchecked 
       Overview, list, detail and help support both languages. Full textual CLI reports and detailed API diagnostics still use Chinese.
 - [x] Add session detail pagination and a visible shown/total count per chain.
       Acceptance: sessions above 500 turns are fully browsable without unbounded responses.
-- [ ] Add an explicit combined main/subagent usage view while retaining clear cost semantics.
+- [x] Add an explicit combined main/subagent usage view while retaining clear cost semantics.
       Acceptance: model, project and time views agree under the selected scope.
 - [x] Confirm the GitHub repository identity, then configure topics, project description,
       release artifacts and a synthetic-data preview.
+
+## Analytics delivered in v0.2.1
+
+- [x] Unified date, project, model and chain filters with matching exports.
+- [x] 52-week activity heatmap and daily/weekly/monthly usage tables.
+- [x] Model details, tool call/error/result-size ranking and a local personal budget for the selected range.
+- [x] Session metadata/preview search and a model selector.
+- [x] Native report saving on desktop; browser downloads in four formats.
+
+## Upcoming patch releases
+
+Use patch versions for each update: v0.2.2, v0.2.3, and onward.
+
+- [ ] Official statusline input and quota provenance, with stale/unavailable states.
+- [ ] Codex provider with its own parsing, pricing and cache semantics.
+- [ ] Full transcript search/export beyond the 200-character previews.
+- [ ] Parent/child subagent tree and richer live session status.
+- [ ] Configurable timezone and dedicated daily/monthly budgets.
 
 ## Validate before expanding
 

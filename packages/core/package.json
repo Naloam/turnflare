@@ -1,6 +1,6 @@
 {
   "name": "@turnflare/core",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "type": "module",
   "description": "Turnflare 核心：Claude Code 会话解析、统计与成本引擎（零运行时依赖）",
   "main": "./dist/index.js",

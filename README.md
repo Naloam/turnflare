@@ -13,30 +13,30 @@ terminal reports and exportable analysis. Compare projects, investigate expensiv
 sessions, inspect tool calls, and separate main conversations from subagent activity.
 
 **Local data. No API key. No telemetry.** Session analysis runs on your machine
-with bundled pricing. Installation needs access to the package registry.
+with bundled pricing. CLI installation needs access to the package registry.
 
 ![Turnflare overview using synthetic example sessions](screenshots/demo-overview.png)
 
 ## Desktop app — no setup
 
-**[Download for Windows or macOS](https://github.com/Naloam/turnflare/releases/tag/v0.2.0)**
+**[Download for Windows or macOS](https://github.com/Naloam/turnflare/releases/tag/v0.2.1)**
 
 | Platform | Download |
 | --- | --- |
-| Windows x64 | [Installer](https://github.com/Naloam/turnflare/releases/download/v0.2.0/Turnflare-0.2.0-windows-x64-setup.exe) · [Portable, no installation](https://github.com/Naloam/turnflare/releases/download/v0.2.0/Turnflare-0.2.0-windows-x64-portable.exe) |
-| Mac, Apple Silicon | [DMG](https://github.com/Naloam/turnflare/releases/download/v0.2.0/Turnflare-0.2.0-mac-arm64.dmg) |
-| Mac, Intel | [DMG](https://github.com/Naloam/turnflare/releases/download/v0.2.0/Turnflare-0.2.0-mac-x64.dmg) |
+| Windows x64 | [Installer](https://github.com/Naloam/turnflare/releases/download/v0.2.1/Turnflare-0.2.1-windows-x64-setup.exe) · [Portable, no installation](https://github.com/Naloam/turnflare/releases/download/v0.2.1/Turnflare-0.2.1-windows-x64-portable.exe) |
+| Mac, Apple Silicon | [DMG](https://github.com/Naloam/turnflare/releases/download/v0.2.1/Turnflare-0.2.1-mac-arm64.dmg) |
+| Mac, Intel | [DMG](https://github.com/Naloam/turnflare/releases/download/v0.2.1/Turnflare-0.2.1-mac-x64.dmg) |
 
 Open the app. Your history is detected automatically; **Choose history folder** selects a custom location. **Try examples** opens an isolated demo. No Node.js or terminal needed. Windows 10/11 x64 or macOS 13+ required.
 
-Initial builds are unsigned/unnotarized and can show a system confirmation on first launch. See [installation and signing status](docs/releases/0.2.0.md).
+Initial builds are unsigned/unnotarized and can show a system confirmation on first launch. See [installation and signing status](docs/releases/0.2.1.md).
 
 ## Try it
 
 Requires **Node.js 22+** (22 or 24 recommended). Install the release directly from GitHub:
 
 ```bash
-npm install --global https://github.com/Naloam/turnflare/releases/download/v0.2.0/turnflare-0.2.0.tgz
+npm install --global https://github.com/Naloam/turnflare/releases/download/v0.2.1/turnflare-0.2.1.tgz
 turnflare demo
 ```
 
@@ -75,6 +75,19 @@ Source development requires pnpm 10. There is no npm registry release yet;
 code, the dashboard and migrations; it does not require pnpm, TypeScript or a source build.
 SQLite is a native dependency: if no prebuilt binary exists for your platform,
 installation needs a C++ build toolchain.
+
+## New in v0.2.1
+
+Open **Analytics** for date presets or a custom UTC range, project/model filters, and
+main/subagent/combined scope. Heatmaps, daily/weekly/monthly tables, model and tool
+activity, and personal budgets share the selected data. Export that view as HTML,
+CSV, Markdown or JSON; the desktop app uses a native Save dialog.
+
+**Sessions** now searches IDs, paths, branches and indexed message previews (first
+200 characters per message). Costs and budgets are API-equivalent estimates, not
+subscription charges or official remaining quota.
+
+![Turnflare analytics using synthetic example sessions](screenshots/demo-analytics.png)
 
 ## What can I investigate?
 

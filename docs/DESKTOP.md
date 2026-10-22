@@ -28,3 +28,11 @@ Packaged smoke tests set `TURNFLARE_DESKTOP_USER_DATA` and `TURNFLARE_DESKTOP_DA
 ## Renderer isolation
 
 The renderer uses sandboxing, context isolation and disabled Node integration. IPC checks the requesting main frame and exact application host. The bridge exposes only state, native folder choice and local/example mode switches. Arbitrary filesystem paths and raw IPC are not exposed. Navigation, new windows, external network requests and device permissions are denied. The only external action is a fixed GitHub Help menu link opened in the system browser. The application protocol sets a restrictive CSP.
+
+
+## Reports
+
+The Analytics page exports HTML, CSV, Markdown and JSON through the system Save dialog.
+The renderer can request only the fixed report endpoint with validated filters; it cannot
+choose an arbitrary read path or access filesystem APIs. The user selects the output path.
+The packaged-app smoke test verifies saved contents, selected chain, cancellation and rejected formats.

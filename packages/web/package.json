@@ -1,6 +1,6 @@
 {
   "name": "@turnflare/web",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "private": true,
   "type": "module",
   "description": "Turnflare Web 仪表盘：React 19 + Vite + Tailwind v4 + Recharts",

@@ -15,6 +15,7 @@ import type { AppConfig } from '../config.js'
 import { buildApp } from '../server.js'
 import type { ScannerFactory, ScannerLike } from '../routes/scan.js'
 import type { ScanOutcome } from '../scanner/index.js'
+import type { SessionRepository } from '../db/repository.js'
 import { FakeRepository } from './fake-repository.js'
 
 /** 测试环境的固定数据根目录；不指向用户真实的 ~/.claude */
@@ -35,7 +36,7 @@ const NOOP_SCANNER: ScannerLike = {
 }
 
 export interface TestAppOptions {
-  readonly repo?: FakeRepository
+  readonly repo?: SessionRepository
   readonly config?: Partial<AppConfig>
   readonly scanner?: ScannerLike
 }

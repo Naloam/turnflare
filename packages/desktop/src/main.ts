@@ -4,7 +4,7 @@ import { readFileSync, writeFileSync, mkdirSync } from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { openDesktopRuntime, type DesktopRuntime, type DesktopSource } from './runtime.js'
-import { isAppUrl, readSavedFolder } from './policy.js'
+import { reportRequest, isAppUrl, readSavedFolder } from './policy.js'
 
 app.setName('Turnflare')
 if (process.env.TURNFLARE_DESKTOP_USER_DATA) {
@@ -130,6 +130,22 @@ async function launch(): Promise<void> {
         },
       )
     }
+  })
+  ipcMain.handle('desktop:save-report', async (event, format: unknown, filters: unknown) => {
+    assertSender(event)
+    const request = reportRequest(format, filters)
+    if (!request || !runtime || !window) throw new Error('Invalid report request')
+    // Fetch before the dialog: source/filter changes while it is open cannot change this report.
+    const result = await runtime.request({ method: 'GET', url: request.url })
+    if (result.status !== 200) throw new Error('Unable to generate report')
+    const selected = await dialog.showSaveDialog(window, {
+      title: 'Save Turnflare report',
+      defaultPath: path.join(app.getPath('documents'), `turnflare-report.${request.extension}`),
+      filters: [{ name: 'Turnflare report', extensions: [request.extension] }],
+    })
+    if (selected.canceled || !selected.filePath) return false
+    writeFileSync(selected.filePath, result.body)
+    return true
   })
   ipcMain.handle('desktop:state', (event) => {
     assertSender(event)

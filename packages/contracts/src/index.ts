@@ -2,3 +2,4 @@
 export type * from './domain.js'
 export type * from './http.js'
 export type * from './desktop.js'
+export type * from './analytics.js'

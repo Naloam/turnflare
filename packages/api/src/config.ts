@@ -117,6 +117,6 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): AppConfig {
       DEFAULT_SCAN_CONCURRENCY,
       'TURNFLARE_SCAN_CONCURRENCY',
     ),
-    version: env.TURNFLARE_VERSION ?? '0.2.0',
+    version: env.TURNFLARE_VERSION ?? '0.2.1',
   }
 }

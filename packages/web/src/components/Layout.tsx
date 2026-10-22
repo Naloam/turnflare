@@ -41,21 +41,20 @@ export function Layout({ path, navigate, children }: LayoutProps) {
       </aside>
 
       <div className="flex min-w-0 flex-1 flex-col">
-        <header className="flex h-14 shrink-0 items-center justify-between gap-3 border-b border-border-subtle bg-surface-1 px-4">
+        <header className="flex min-h-14 shrink-0 flex-wrap items-center justify-between gap-2 border-b border-border-subtle bg-surface-1 px-4 py-2 md:h-14 md:py-0">
           <div className="flex items-center gap-3">
             <span className="md:hidden">
               <Brand />
             </span>
-            {/* 与侧边栏导航分开命名：两个同名 landmark 会让读屏用户听到重复的"主导航" */}
-            <nav className="md:hidden" aria-label={t('主导航（紧凑）')}>
-              <NavLinks activePath={path} navigate={navigate} orientation="horizontal" />
-            </nav>
           </div>
           <div className="flex items-center gap-2">
             <RefreshControls />
             <LanguageToggle />
             <ThemeToggle />
           </div>
+          <nav className="w-full overflow-x-auto md:hidden" aria-label={t('主导航（紧凑）')}>
+            <NavLinks activePath={path} navigate={navigate} orientation="horizontal" />
+          </nav>
         </header>
 
         <DesktopControls />

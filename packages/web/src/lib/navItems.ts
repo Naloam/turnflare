@@ -7,6 +7,7 @@ export interface NavItem {
 /** 导航表：顺序即展示顺序 */
 export const NAV_ITEMS: readonly NavItem[] = [
   { to: '/overview', label: '总览' },
+  { to: '/analytics', label: '分析' },
   { to: '/sessions', label: '会话' },
   { to: '/projects', label: '项目' },
 ]

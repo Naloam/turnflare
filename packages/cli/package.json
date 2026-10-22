@@ -1,6 +1,6 @@
 {
   "name": "@turnflare/cli",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "type": "module",
   "description": "Turnflare 命令行工具：扫描、统计、报告导出",
   "bin": {

@@ -12,26 +12,37 @@
 
 ![使用固定示例数据的 Turnflare 总览](screenshots/demo-overview.png)
 
+## v0.2.1 新增
+
+新增**分析**页：日期快捷范围与自定义 UTC 区间、项目和模型筛选、主对话 / subagent / 合并统计、
+活动热图、日 / 周 / 月明细、模型及工具排行和本机自设预算。图表与导出使用同一份筛选数据。
+支持 HTML、CSV、Markdown、JSON 下载，桌面版通过系统保存窗口导出。
+
+会话页支持 ID、路径、分支和消息预览搜索（每条消息前 200 字）。预算与成本均为 API 等价估算，
+不是订阅账单或官方剩余额度。
+
+![示例数据分析页](screenshots/demo-analytics.png)
+
 ## 桌面应用：下载即可使用
 
-**[下载 Windows / macOS 应用](https://github.com/Naloam/turnflare/releases/tag/v0.2.0)**
+**[下载 Windows / macOS 应用](https://github.com/Naloam/turnflare/releases/tag/v0.2.1)**
 
 | 系统 | 下载 |
 | --- | --- |
-| Windows x64 | [安装版](https://github.com/Naloam/turnflare/releases/download/v0.2.0/Turnflare-0.2.0-windows-x64-setup.exe) · [免安装版](https://github.com/Naloam/turnflare/releases/download/v0.2.0/Turnflare-0.2.0-windows-x64-portable.exe) |
-| Mac，Apple 芯片 | [DMG](https://github.com/Naloam/turnflare/releases/download/v0.2.0/Turnflare-0.2.0-mac-arm64.dmg) |
-| Mac，Intel 芯片 | [DMG](https://github.com/Naloam/turnflare/releases/download/v0.2.0/Turnflare-0.2.0-mac-x64.dmg) |
+| Windows x64 | [安装版](https://github.com/Naloam/turnflare/releases/download/v0.2.1/Turnflare-0.2.1-windows-x64-setup.exe) · [免安装版](https://github.com/Naloam/turnflare/releases/download/v0.2.1/Turnflare-0.2.1-windows-x64-portable.exe) |
+| Mac，Apple 芯片 | [DMG](https://github.com/Naloam/turnflare/releases/download/v0.2.1/Turnflare-0.2.1-mac-arm64.dmg) |
+| Mac，Intel 芯片 | [DMG](https://github.com/Naloam/turnflare/releases/download/v0.2.1/Turnflare-0.2.1-mac-x64.dmg) |
 
 打开应用即可自动读取本地历史；**选择日志目录**可指定其他位置，**体验示例**可先查看生成的样例。无需安装 Node、pnpm 或输入命令。支持 Windows 10/11 x64 和 macOS 13+。
 
-初版尚无受信任的开发者签名和 Apple 公证，首次打开可能需要在系统界面确认。详见 [安装说明与签名状态](docs/releases/0.2.0.md)。
+初版尚无受信任的开发者签名和 Apple 公证，首次打开可能需要在系统界面确认。详见 [安装说明与签名状态](docs/releases/0.2.1.md)。
 
 ## 快速体验
 
 需要 **Node.js 22+**（推荐 22 或 24）。直接安装 GitHub 发布包：
 
 ```bash
-npm install --global https://github.com/Naloam/turnflare/releases/download/v0.2.0/turnflare-0.2.0.tgz
+npm install --global https://github.com/Naloam/turnflare/releases/download/v0.2.1/turnflare-0.2.1.tgz
 turnflare demo
 ```
 

@@ -10,6 +10,7 @@
 
 import { z } from 'zod'
 import type { ReportFormat } from '@turnflare/core'
+import type { UsageQuery } from '../types.js'
 import type { ScanRequest, SessionChain, TimelineQuery, ValidatedSessionsQuery } from '../types.js'
 
 // ─── 白名单常量 ──────────────────────────────────────────────────────────────
@@ -106,6 +107,7 @@ const sessionsQuerySchema = z.object({
     .default(DEFAULT_LIMIT),
   project: z.string().trim().min(MIN_SLUG_LENGTH).optional(),
   model: z.string().trim().min(MIN_SLUG_LENGTH).optional(),
+  search: z.string().trim().min(1).max(200).optional(),
   sort: z.enum(SESSIONS_SORT_VALUES).default('cost'),
   order: z.enum(SESSIONS_ORDER_VALUES).default('desc'),
 })
@@ -115,7 +117,7 @@ export function parseSessionsQuery(raw: unknown): ParseResult<ValidatedSessionsQ
   if (!result.ok) {
     return result
   }
-  const { page, limit, project, model, sort, order } = result.value
+  const { page, limit, project, model, search, sort, order } = result.value
   // exactOptionalPropertyTypes：没传的过滤条件必须整个键都不出现，
   // 不能塞一个 undefined 进对象里——那会让下游的 `!== undefined` 判断失效。
   return {
@@ -127,6 +129,7 @@ export function parseSessionsQuery(raw: unknown): ParseResult<ValidatedSessionsQ
       order,
       ...(project === undefined ? {} : { project }),
       ...(model === undefined ? {} : { model }),
+      ...(search === undefined ? {} : { search }),
     },
   }
 }
@@ -229,4 +232,42 @@ export function parseJobId(raw: unknown): ParseResult<string> {
     return result
   }
   return { ok: true, value: result.value.jobId }
+}
+
+/** Analytics bounds are normalized to fixed-width UTC before SQLite string comparisons. */
+const analyticsQuerySchema = z
+  .object({
+    since: z.iso
+      .datetime({ offset: true })
+      .or(z.iso.date())
+      .transform((v) => new Date(v).toISOString())
+      .optional(),
+    until: z.iso
+      .datetime({ offset: true })
+      .or(z.iso.date())
+      .transform((v) => new Date(v).toISOString())
+      .optional(),
+    project: z.string().trim().min(1).max(1000).optional(),
+    model: z.string().trim().min(1).max(200).optional(),
+    chain: z.enum(['all', 'main', 'side']).optional(),
+  })
+  .refine((v) => v.since === undefined || v.until === undefined || v.since < v.until, {
+    message: 'since must precede until',
+    path: ['until'],
+  })
+
+export function parseUsageQuery(raw: unknown): ParseResult<UsageQuery> {
+  const result = toParseResult(analyticsQuerySchema, raw)
+  if (!result.ok) return result
+  const { since, until, project, model, chain } = result.value
+  return {
+    ok: true,
+    value: {
+      ...(since === undefined ? {} : { since }),
+      ...(until === undefined ? {} : { until }),
+      ...(project === undefined ? {} : { project }),
+      ...(model === undefined ? {} : { model }),
+      ...(chain === undefined ? {} : { chain }),
+    },
+  }
 }

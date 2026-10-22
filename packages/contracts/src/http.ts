@@ -93,6 +93,8 @@ export interface ScanJob {
  * 类型上标成必填会让人以为"不传就一定没问题"，而运行时照样能传空对象。
  */
 export interface SessionsQuery {
+  /** Literal substring of indexed previews (200 chars/turn), ID, project, path or branch. */
+  readonly search?: string
   readonly page?: number
   readonly limit?: number
   readonly project?: string

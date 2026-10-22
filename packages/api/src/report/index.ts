@@ -8,7 +8,14 @@
 
 import type { ReportFormat } from '@turnflare/core'
 import type { SessionRepository } from '../db/repository.js'
-import type { AggregatedStats, ModelStats, ProjectStats, TimeBucket, ToolStats } from '../types.js'
+import type {
+  UsageQuery,
+  AggregatedStats,
+  ModelStats,
+  ProjectStats,
+  TimeBucket,
+  ToolStats,
+} from '../types.js'
 import { renderCsvReport } from './csv.js'
 import { renderHtmlReport } from './html.js'
 import { renderJsonReport } from './json.js'
@@ -16,8 +23,12 @@ import { renderMarkdownReport } from './markdown.js'
 
 /** 一份报表需要的全部数据；渲染函数只依赖它 */
 export interface ReportPayload {
+  readonly filters?: UsageQuery
   readonly generatedAt: string
-  readonly overview: AggregatedStats
+  /** Legacy overview includes sidechain; filtered totals follow `filters` and omit a separate sidechain summary. */
+  readonly overview: Omit<AggregatedStats, 'sidechain'> & {
+    readonly sidechain?: AggregatedStats['sidechain']
+  }
   readonly models: readonly ModelStats[]
   readonly projects: readonly ProjectStats[]
   readonly tools: readonly ToolStats[]
@@ -31,7 +42,38 @@ export interface RenderedReport {
 }
 
 /** 从仓储取一份报表数据；generatedAt 由调用方给定，保证包络与正文时间一致 */
-export function collectReportData(repo: SessionRepository, generatedAt: string): ReportPayload {
+export function collectReportData(
+  repo: SessionRepository,
+  generatedAt: string,
+  filters?: UsageQuery,
+): ReportPayload {
+  if (filters !== undefined) {
+    const data = repo.getAnalytics(filters)
+    const overview: ReportPayload['overview'] = {
+      sessionCount: data.sessionCount,
+      turnCount: data.turnCount,
+      usage: data.usage,
+      cost: data.cost,
+      cacheHitRate: data.cacheHitRate,
+      errorRate: data.errorRate,
+      firstActivityAt: data.firstActivityAt,
+      lastActivityAt: data.lastActivityAt,
+      byModel: data.models,
+      byProject: data.projects,
+      byDay: data.days,
+      byHour: [],
+      toolUsage: data.tools,
+    }
+    return {
+      generatedAt,
+      filters: data.filters,
+      overview,
+      models: data.models,
+      projects: data.projects,
+      tools: data.tools,
+      timeline: data.days,
+    }
+  }
   return {
     generatedAt,
     overview: repo.getOverview(),

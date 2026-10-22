@@ -12,6 +12,8 @@ import type { Session } from '@turnflare/core'
 import type { FileStamp, SessionRepository, SessionTimeRange } from '../db/repository.js'
 import type {
   AggregatedStats,
+  AnalyticsPayload,
+  UsageQuery,
   CostBreakdown,
   ModelStats,
   ProjectStats,
@@ -239,6 +241,25 @@ export class FakeRepository implements SessionRepository {
     })
     const offset = Math.max(0, page - 1) * limit
     return { items: sorted.slice(offset, offset + limit), total: filtered.length }
+  }
+
+  getAnalyticsOptions() {
+    return {
+      projects: this.stats.byProject.map((p) => p.projectSlug),
+      models: this.stats.byModel.map((m) => m.model),
+    }
+  }
+
+  getAnalytics(query: UsageQuery): AnalyticsPayload {
+    return {
+      ...this.stats,
+      filters: query,
+      requestCount: this.stats.byModel.reduce((n, m) => n + m.requestCount, 0),
+      models: this.stats.byModel,
+      projects: this.stats.byProject,
+      days: this.stats.byDay,
+      tools: this.stats.toolUsage,
+    }
   }
 
   getOverview(): AggregatedStats {

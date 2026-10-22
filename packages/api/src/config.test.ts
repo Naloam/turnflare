@@ -16,7 +16,7 @@ describe('loadConfig 的默认值', () => {
     expect(config.logLevel).toBe('info')
     expect(config.maxFileBytes).toBe(50 * 1024 * 1024)
     expect(config.scanConcurrency).toBe(4)
-    expect(config.version).toBe('0.2.0')
+    expect(config.version).toBe('0.2.1')
     expect(config.dbPath).toContain('.turnflare')
     expect(config.dataRoot).toContain('.claude')
   })

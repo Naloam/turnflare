@@ -22,6 +22,8 @@ export const SESSION_SORT_OPTIONS: readonly { value: SessionSortKey; label: stri
 export const SESSIONS_PAGE_SIZE = 20
 
 interface SessionsQueryInput {
+  readonly search?: string
+  readonly model?: string
   readonly page: number
   readonly project: string | null
   readonly sort: SessionSortKey
@@ -44,5 +46,7 @@ export function buildSessionsQuery(input: SessionsQueryInput): string {
   if (input.project !== null) {
     search.set('project', input.project)
   }
+  if (input.search?.trim()) search.set('search', input.search.trim())
+  if (input.model?.trim()) search.set('model', input.model.trim())
   return `?${search.toString()}`
 }

@@ -260,6 +260,7 @@ const DEFAULT_SORT: NonNullable<SessionsQuery['sort']> = 'cost'
 const DEFAULT_ORDER: NonNullable<SessionsQuery['order']> = 'desc'
 
 export interface NormalizedSessionsQuery {
+  readonly search?: string
   readonly page: number
   readonly limit: number
   readonly sort: NonNullable<SessionsQuery['sort']>
@@ -286,6 +287,7 @@ export function normalizeSessionsQuery(query: SessionsQuery): NormalizedSessions
     order: query.order ?? DEFAULT_ORDER,
     ...(query.project === undefined ? {} : { project: query.project }),
     ...(query.model === undefined ? {} : { model: query.model }),
+    ...(query.search === undefined ? {} : { search: query.search }),
   }
 }
 
@@ -318,6 +320,17 @@ export function buildSessionsFilter(query: SessionsQuery): SessionsFilter {
   if (query.model !== undefined) {
     fragments.push(SQL_FILTER_MODEL)
     params.push(query.model)
+  }
+
+  if (query.search !== undefined && query.search.trim().length > 0) {
+    const value = query.search.trim()
+    fragments.push(`(instr(lower(sessions.session_id), lower(?)) > 0
+      OR instr(lower(sessions.project_slug), lower(?)) > 0
+      OR instr(lower(COALESCE(sessions.cwd, '')), lower(?)) > 0
+      OR instr(lower(COALESCE(sessions.git_branch, '')), lower(?)) > 0
+      OR EXISTS (SELECT 1 FROM turns search_turn WHERE search_turn.session_id = sessions.session_id
+        AND instr(lower(search_turn.text_preview), lower(?)) > 0))`)
+    params.push(value, value, value, value, value)
   }
 
   return { sql: `WHERE ${fragments.join('\n  AND ')}`, params }
