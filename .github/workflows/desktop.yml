@@ -15,7 +15,8 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - { name: Windows x64, os: windows-latest, artifact: windows-x64 }
+          # Pin VS 2022: the default Windows image's VS 2026 is not yet recognized by node-gyp.
+          - { name: Windows x64, os: windows-2022, artifact: windows-x64 }
           - { name: macOS Apple Silicon, os: macos-15, artifact: macos-arm64 }
           - { name: macOS Intel, os: macos-15-intel, artifact: macos-x64 }
     runs-on: ${{ matrix.os }}
