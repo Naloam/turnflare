@@ -1,8 +1,6 @@
 name: Desktop builds
 on:
   workflow_dispatch:
-  push:
-    tags: ['v*']
 permissions:
   contents: read
 concurrency:
@@ -105,7 +103,7 @@ jobs:
           cp "release/turnflare-$version.tgz" release/final/
           (cd release/final && sha256sum Turnflare-* turnflare-*.tgz > SHA256SUMS)
           if gh release view "$tag" --json isDraft --jq .isDraft > /tmp/turnflare-draft; then
-            test "$(cat /tmp/turnflare-draft)" = true || { echo 'Refusing to replace a published release'; exit 1; }
+            test "$(cat /tmp/turnflare-draft)" = true || { echo 'Published release is immutable; leaving its downloads unchanged'; exit 0; }
           else
             gh release create "$tag" --draft --target "$GITHUB_SHA" --title "Turnflare $tag — Desktop apps" --notes-file "docs/releases/$version.md"
           fi

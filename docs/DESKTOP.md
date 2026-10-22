@@ -17,7 +17,7 @@ pnpm test:desktop
 
 Outputs go into `release/desktop`. Native dependencies are installed into a separate staging application and rebuilt for Electron, so the workspace's Node SQLite installation stays intact. The staging application uses pinned runtime dependency versions. Native modules are unpacked from ASAR.
 
-The workflow `.github/workflows/desktop.yml` builds on native Windows, Apple Silicon and Intel runners. It tests the packaged app, the Windows installation and the app copied from the Mac DMG, then assembles a **draft** GitHub release with checksums and a CLI archive. Run it manually from GitHub Actions or push a version tag. A published release is never overwritten automatically. Signing/notarization are currently unavailable; see the release notes.
+The workflow `.github/workflows/desktop.yml` builds on native Windows, Apple Silicon and Intel runners. It tests the packaged app, the Windows installation and the app copied from the Mac DMG, then assembles a **draft** GitHub release with checksums and a CLI archive. Run it manually from GitHub Actions after updating the package version. Publishing that draft does not start another build. A published release is never overwritten automatically. Signing/notarization are currently unavailable; see the release notes.
 
 ## Data and lifecycle
 

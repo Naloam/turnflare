@@ -241,6 +241,6 @@ test: 补充分页边界用例
 
 ## 发布包
 
-`pnpm release:pack` 生成 `release/turnflare-0.1.0.tgz`。`pnpm verify:package` 在工作区外安装它，
+`pnpm release:pack` 生成 `release/turnflare-0.2.0.tgz`。`pnpm verify:package` 在工作区外安装它，
 验证 CLI、静态资源、只读示例和新增文件的后台增量索引。仅打包本项目的工作区代码，第三方运行时依赖
 按锁定版本交给 npm 安装。`pnpm start` 的后台扫描周期默认 10000ms，可用 `TURNFLARE_WATCH_INTERVAL_MS` 覆盖，0 表示关闭。
