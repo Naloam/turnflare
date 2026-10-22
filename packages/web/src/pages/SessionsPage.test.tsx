@@ -180,7 +180,11 @@ describe('SessionsPage', () => {
 
     await userEvent.click(screen.getByRole('button', { name: '下一页' }))
     await waitFor(() => {
-      expect(stub.lastCallFor('/api/sessions?').url).toContain('page=2')
+      expect(
+        stub.calls.some(
+          (call) => call.url.includes('/api/sessions?') && call.url.includes('page=2'),
+        ),
+      ).toBe(true)
     })
 
     // page=2 返回空数组，组件应自己退回第 1 页而不是停在空白表格

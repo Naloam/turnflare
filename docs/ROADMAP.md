@@ -5,6 +5,10 @@ try, trustworthy and worth returning to. Checked items are delivered; unchecked 
 
 ## Foundation delivered
 
+- [x] Windows installer and portable application; Apple Silicon and Intel Mac DMG/ZIP packages.
+- [x] Desktop history detection, native folder selection and isolated example mode; no Node setup.
+- [ ] Trusted developer signing and Apple notarization for smoother first launch.
+
 - [x] Canonical type-only contracts shared by all packages.
 - [x] Public Node.js entry for the API package.
 - [x] One-origin dashboard and API with a source-based start command.

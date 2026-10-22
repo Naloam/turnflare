@@ -1,4 +1,5 @@
 import { t, useLocale } from '../lib/locale'
+import { desktopBridge } from '../lib/desktop'
 interface EmptyStateProps {
   readonly title: string
   readonly description?: string
@@ -17,7 +18,13 @@ export function EmptyState({ title, description, actionLabel, onAction }: EmptyS
     >
       <p className="text-base font-medium text-ink-1">{t(title)}</p>
       {description === undefined ? null : (
-        <p className="max-w-md text-sm text-ink-2">{t(description)}</p>
+        <p className="max-w-md text-sm text-ink-2">
+          {t(
+            desktopBridge() && description.includes('turnflare scan')
+              ? '未找到会话记录。选择顶部的日志目录，或先体验示例数据。'
+              : description,
+          )}
+        </p>
       )}
       {hasAction ? (
         <button

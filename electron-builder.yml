@@ -1,0 +1,38 @@
+appId: io.github.naloam.turnflare
+productName: Turnflare
+directories:
+  app: release/desktop-app
+  output: release/desktop
+  buildResources: packages/desktop/assets
+electronDist: node_modules/electron/dist
+asar: true
+asarUnpack:
+  - '**/*.node'
+files:
+  - '**/*'
+  - '!**/*.map'
+  - '!**/*.ts'
+  - '!**/test/**'
+npmRebuild: true
+artifactName: 'Turnflare-${version}-${os}-${arch}.${ext}'
+publish: null
+mac:
+  target: [dmg, zip]
+  category: public.app-category.developer-tools
+  icon: icon.png
+  identity: '-'
+  hardenedRuntime: false
+  notarize: false
+win:
+  target: [nsis, portable]
+  icon: icon.ico
+nsis:
+  oneClick: true
+  perMachine: false
+  createDesktopShortcut: true
+  createStartMenuShortcut: true
+  shortcutName: Turnflare
+  artifactName: 'Turnflare-${version}-windows-${arch}-setup.${ext}'
+portable:
+  requestExecutionLevel: user
+  artifactName: 'Turnflare-${version}-windows-${arch}-portable.${ext}'

@@ -77,7 +77,7 @@ function inspect(directory) {
     }
   }
 }
-for (const pkg of ['core', 'api', 'cli', 'web']) inspect(path.join(root, 'packages', pkg, 'src'))
+for (const pkg of ['core', 'api', 'cli', 'web', 'desktop']) inspect(path.join(root, 'packages', pkg, 'src'))
 const diagnostics = ts.getPreEmitDiagnostics(program)
 if (diagnostics.length) {
   console.error(

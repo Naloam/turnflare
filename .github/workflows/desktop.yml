@@ -1,0 +1,111 @@
+name: Desktop builds
+on:
+  workflow_dispatch:
+  push:
+    tags: ['v*']
+permissions:
+  contents: read
+concurrency:
+  group: desktop-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  package:
+    name: ${{ matrix.name }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { name: Windows x64, os: windows-latest, artifact: windows-x64 }
+          - { name: macOS Apple Silicon, os: macos-15, artifact: macos-arm64 }
+          - { name: macOS Intel, os: macos-15-intel, artifact: macos-x64 }
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    defaults:
+      run:
+        shell: bash
+    env:
+      CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Download bundled runtime
+        run: pnpm exec install-electron
+      - name: Build and package native app
+        run: pnpm desktop:pack
+      - name: Launch packaged desktop
+        run: pnpm test:desktop
+      - name: Verify app installed from the disk image
+        if: runner.os == 'macOS'
+        run: |
+          mkdir -p "$RUNNER_TEMP/turnflare-volume"
+          hdiutil attach release/desktop/*.dmg -nobrowse -readonly -mountpoint "$RUNNER_TEMP/turnflare-volume"
+          ditto "$RUNNER_TEMP/turnflare-volume/Turnflare.app" "$RUNNER_TEMP/Turnflare.app"
+          hdiutil detach "$RUNNER_TEMP/turnflare-volume"
+          node tools/verify-desktop.mjs "$RUNNER_TEMP/Turnflare.app/Contents/MacOS/Turnflare"
+      - name: Verify Windows installer
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          $installer = (Get-ChildItem release/desktop/*-setup.exe)[0].FullName
+          $folder = Join-Path $env:RUNNER_TEMP 'turnflare-installed'
+          Start-Process -FilePath $installer -ArgumentList '/S', "/D=$folder" -Wait
+          Get-Process Turnflare -ErrorAction SilentlyContinue | Stop-Process -Force
+          node tools/verify-desktop.mjs "$folder/Turnflare.exe"
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Save desktop distributions
+        uses: actions/upload-artifact@v4
+        with:
+          name: desktop-${{ matrix.artifact }}
+          path: |
+            release/desktop/*.exe
+            release/desktop/*.dmg
+            release/desktop/*.zip
+          if-no-files-found: error
+          retention-days: 14
+      - name: Save desktop preview
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: preview-${{ matrix.artifact }}
+          path: release/desktop-smoke-*.png
+          if-no-files-found: ignore
+  release:
+    name: Assemble draft release
+    needs: package
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Build CLI distribution
+        run: pnpm release:pack
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: desktop-*
+          merge-multiple: true
+          path: release/final
+      - name: Assemble versioned release and checksums
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          version=$(node -p "require('./package.json').version")
+          tag="v$version"
+          cp "release/turnflare-$version.tgz" release/final/
+          (cd release/final && sha256sum Turnflare-* turnflare-*.tgz > SHA256SUMS)
+          if gh release view "$tag" --json isDraft --jq .isDraft > /tmp/turnflare-draft; then
+            test "$(cat /tmp/turnflare-draft)" = true || { echo 'Refusing to replace a published release'; exit 1; }
+          else
+            gh release create "$tag" --draft --target "$GITHUB_SHA" --title "Turnflare $tag — Desktop apps" --notes-file "docs/releases/$version.md"
+          fi
+          gh release upload "$tag" release/final/* --clobber

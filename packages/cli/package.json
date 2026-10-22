@@ -1,8 +1,8 @@
 {
   "name": "@turnflare/cli",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "type": "module",
-  "description": "Turnflare \u547d\u4ee4\u884c\u5de5\u5177\uff1a\u626b\u63cf\u3001\u7edf\u8ba1\u3001\u62a5\u544a\u5bfc\u51fa",
+  "description": "Turnflare 命令行工具：扫描、统计、报告导出",
   "bin": {
     "turnflare": "./dist/bin.js"
   },

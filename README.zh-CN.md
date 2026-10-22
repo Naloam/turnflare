@@ -12,12 +12,26 @@
 
 ![使用固定示例数据的 Turnflare 总览](screenshots/demo-overview.png)
 
+## 桌面应用：下载即可使用
+
+**[下载 Windows / macOS 应用](https://github.com/Naloam/turnflare/releases/tag/v0.2.0)**
+
+| 系统 | 下载 |
+| --- | --- |
+| Windows x64 | [安装版](https://github.com/Naloam/turnflare/releases/download/v0.2.0/Turnflare-0.2.0-windows-x64-setup.exe) · [免安装版](https://github.com/Naloam/turnflare/releases/download/v0.2.0/Turnflare-0.2.0-windows-x64-portable.exe) |
+| Mac，Apple 芯片 | [DMG](https://github.com/Naloam/turnflare/releases/download/v0.2.0/Turnflare-0.2.0-mac-arm64.dmg) |
+| Mac，Intel 芯片 | [DMG](https://github.com/Naloam/turnflare/releases/download/v0.2.0/Turnflare-0.2.0-mac-x64.dmg) |
+
+打开应用即可自动读取本地历史；**选择日志目录**可指定其他位置，**体验示例**可先查看生成的样例。无需安装 Node、pnpm 或输入命令。支持 Windows 10/11 x64 和 macOS 13+。
+
+初版尚无受信任的开发者签名和 Apple 公证，首次打开可能需要在系统界面确认。详见 [安装说明与签名状态](docs/releases/0.2.0.md)。
+
 ## 快速体验
 
 需要 **Node.js 22+**（推荐 22 或 24）。直接安装 GitHub 发布包：
 
 ```bash
-npm install --global https://github.com/Naloam/turnflare/releases/download/v0.1.0/turnflare-0.1.0.tgz
+npm install --global https://github.com/Naloam/turnflare/releases/download/v0.2.0/turnflare-0.2.0.tgz
 turnflare demo
 ```
 

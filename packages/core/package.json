@@ -1,8 +1,8 @@
 {
   "name": "@turnflare/core",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "type": "module",
-  "description": "Turnflare \u6838\u5fc3\uff1aClaude Code \u4f1a\u8bdd\u89e3\u6790\u3001\u7edf\u8ba1\u4e0e\u6210\u672c\u5f15\u64ce\uff08\u96f6\u8fd0\u884c\u65f6\u4f9d\u8d56\uff09",
+  "description": "Turnflare 核心：Claude Code 会话解析、统计与成本引擎（零运行时依赖）",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {

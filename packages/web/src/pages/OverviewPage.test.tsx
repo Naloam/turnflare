@@ -29,6 +29,12 @@ afterEach(() => {
 })
 
 describe('OverviewPage', () => {
+  test('zero indexed sessions shows onboarding instead of empty charts', async () => {
+    stubOverview(makeOverview({ sessionCount: 0 }))
+    render(<OverviewPage />)
+    expect(await screen.findByText('还没有统计数据')).toBeInTheDocument()
+    expect(screen.queryByTestId('kpi-card')).not.toBeInTheDocument()
+  })
   test('加载中显示骨架', () => {
     vi.stubGlobal(
       'fetch',

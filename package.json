@@ -1,7 +1,7 @@
 {
   "name": "turnflare",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.2.0",
   "type": "module",
   "description": "Local Claude Code session, subagent and token cost explorer",
   "packageManager": "pnpm@10.33.0",
@@ -26,13 +26,17 @@
     "test:tools": "node --test tools/*.test.mjs",
     "check": "pnpm build && pnpm typecheck && pnpm contracts && pnpm lint && pnpm test && pnpm test:tools",
     "release:pack": "pnpm build && node tools/package.mjs",
-    "verify:package": "pnpm release:pack && node tools/verify-package.mjs"
+    "verify:package": "pnpm release:pack && node tools/verify-package.mjs",
+    "desktop:pack": "pnpm build && node tools/package-desktop.mjs",
+    "test:desktop": "node tools/verify-desktop.mjs"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.0",
     "@playwright/test": "^1.64.1",
     "@types/node": "^24.10.1",
     "@vitest/coverage-v8": "^3.2.4",
+    "electron": "45.0.0",
+    "electron-builder": "26.15.3",
     "esbuild": "0.28.2",
     "eslint": "^9.39.0",
     "eslint-plugin-react-hooks": "^7.1.1",

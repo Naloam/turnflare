@@ -64,7 +64,8 @@ turnflare/
 │   ├── core/     @turnflare/core  解析 + 统计 + 成本引擎（零依赖，纯 Node）
 │   ├── api/      @turnflare/api   Fastify REST 服务 + SQLite 持久化
 │   ├── web/      @turnflare/web   React 19 + Vite 仪表盘
-│   └── cli/      @turnflare/cli   命令行工具
+│   ├── cli/      @turnflare/cli   命令行工具
+│   └── desktop/  @turnflare/desktop  Windows / macOS 原生窗口与打包入口
 ├── docs/
 ├── tools/        构建辅助脚本
 └── .github/workflows/
@@ -77,6 +78,7 @@ flowchart LR
   CLI[cli] --> API[api: public Node entry]
   CLI --> Core[core: parser and cost]
   API --> Core
+  Desktop[desktop: Electron shell] -->|in-process injection| API
   Core -. types .-> Contracts[contracts]
   API -. types .-> Contracts
   Web[web: browser] -. types .-> Contracts

@@ -4,6 +4,7 @@ import { NavLinks } from './NavLinks'
 import { ThemeToggle } from './ThemeToggle'
 import { LanguageToggle } from './LanguageToggle'
 import { RefreshControls } from './RefreshControls'
+import { DesktopControls } from './DesktopControls'
 
 interface LayoutProps {
   /** 当前路径模板，用于导航高亮 */
@@ -56,6 +57,8 @@ export function Layout({ path, navigate, children }: LayoutProps) {
             <ThemeToggle />
           </div>
         </header>
+
+        <DesktopControls />
 
         <main className="min-w-0 flex-1 overflow-auto p-4 md:p-6">{children}</main>
       </div>

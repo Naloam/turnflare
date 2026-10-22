@@ -17,12 +17,26 @@ with bundled pricing. Installation needs access to the package registry.
 
 ![Turnflare overview using synthetic example sessions](screenshots/demo-overview.png)
 
+## Desktop app — no setup
+
+**[Download for Windows or macOS](https://github.com/Naloam/turnflare/releases/tag/v0.2.0)**
+
+| Platform | Download |
+| --- | --- |
+| Windows x64 | [Installer](https://github.com/Naloam/turnflare/releases/download/v0.2.0/Turnflare-0.2.0-windows-x64-setup.exe) · [Portable, no installation](https://github.com/Naloam/turnflare/releases/download/v0.2.0/Turnflare-0.2.0-windows-x64-portable.exe) |
+| Mac, Apple Silicon | [DMG](https://github.com/Naloam/turnflare/releases/download/v0.2.0/Turnflare-0.2.0-mac-arm64.dmg) |
+| Mac, Intel | [DMG](https://github.com/Naloam/turnflare/releases/download/v0.2.0/Turnflare-0.2.0-mac-x64.dmg) |
+
+Open the app. Your history is detected automatically; **Choose history folder** selects a custom location. **Try examples** opens an isolated demo. No Node.js or terminal needed. Windows 10/11 x64 or macOS 13+ required.
+
+Initial builds are unsigned/unnotarized and can show a system confirmation on first launch. See [installation and signing status](docs/releases/0.2.0.md).
+
 ## Try it
 
 Requires **Node.js 22+** (22 or 24 recommended). Install the release directly from GitHub:
 
 ```bash
-npm install --global https://github.com/Naloam/turnflare/releases/download/v0.1.0/turnflare-0.1.0.tgz
+npm install --global https://github.com/Naloam/turnflare/releases/download/v0.2.0/turnflare-0.2.0.tgz
 turnflare demo
 ```
 

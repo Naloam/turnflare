@@ -55,6 +55,9 @@ jobs:
       - name: cli 单元测试
         run: pnpm --filter @turnflare/cli test
 
+      - name: Desktop runtime and security policy tests
+        run: pnpm --filter @turnflare/desktop test
+
       # web 的单测与 E2E 都不能省：只跑 vite build 的话，
       # 组件逻辑（比如"无价目模型时显示警告"）坏了也没人知道。
       - name: web 单元测试（含覆盖率阈值）

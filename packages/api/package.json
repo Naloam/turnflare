@@ -1,8 +1,8 @@
 {
   "name": "@turnflare/api",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "type": "module",
-  "description": "Turnflare REST API \u670d\u52a1\uff1aFastify + SQLite \u589e\u91cf\u626b\u63cf",
+  "description": "Turnflare REST API 服务：Fastify + SQLite 增量扫描",
   "main": "./dist/index.js",
   "scripts": {
     "build": "tsc -p tsconfig.build.json && node scripts/copy-migrations.mjs",

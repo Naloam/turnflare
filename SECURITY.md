@@ -1,6 +1,13 @@
 # Security and privacy
 
-Turnflare processes local conversation logs. The normal server binds to
+The desktop application uses a private `turnflare://app/` protocol and does not
+open a network listening port. Its renderer is sandboxed with Node integration
+disabled; a small, sender-checked bridge provides native folder selection.
+Indexes and the selected history path stay in the per-user Turnflare application
+data directory. Initial desktop builds are not developer-signed/notarized; see
+the [release signing status](docs/releases/0.2.0.md).
+
+Turnflare processes local conversation logs. The optional command-line server binds to
 `127.0.0.1` and has no authentication. Keep it on your own machine; changing
 `HOST` to a network interface makes session previews and local paths accessible
 to that network. CORS is not authentication.

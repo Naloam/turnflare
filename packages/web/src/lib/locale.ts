@@ -5,6 +5,16 @@ const STORAGE_KEY = 'turnflare-language'
 const listeners = new Set<() => void>()
 
 const EN: Readonly<Record<string, string>> = {
+  本地记录: 'Local history',
+  示例模式: 'Example mode',
+  '使用生成的示例，不读取你的历史': 'Synthetic examples; your history stays untouched',
+  选择日志目录: 'Choose history folder',
+  '正在打开…': 'Opening…',
+  返回本地记录: 'Back to local history',
+  体验示例: 'Try examples',
+  '部分文件无法读取，请检查目录权限': 'Some files could not be read. Check folder permissions.',
+  '无法打开数据，请重试或选择其他目录': 'Unable to open data. Retry or choose another folder.',
+  '未找到会话记录。选择顶部的日志目录，或先体验示例数据。': 'No sessions found. Choose your history folder above, or try the examples.',
   总览: 'Overview',
   会话: 'Sessions',
   项目: 'Project',
