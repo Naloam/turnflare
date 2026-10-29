@@ -23,13 +23,13 @@
     "@turnflare/contracts": "workspace:*"
   },
   "devDependencies": {
-    "@types/better-sqlite3": "^7.6.13",
-    "@types/node": "^24.10.1",
-    "@vitest/coverage-v8": "^3.2.7",
+    "@types/better-sqlite3": "^9.6.0",
+    "@types/node": "^26.6.5",
+    "@vitest/coverage-v8": "^5.0.5",
     "pino-pretty": "^13.1.0",
     "tsx": "^4.23.15",
-    "typescript": "^5.9.3",
-    "vitest": "^3.2.4"
+    "typescript": "^7.0.2",
+    "vitest": "^5.0.5"
   },
   "types": "./dist/index.d.ts",
   "exports": {
