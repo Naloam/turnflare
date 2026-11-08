@@ -38,6 +38,15 @@ describe('format：展示助手', () => {
     expect(displayRelativeTime(null, now)).toBe('-')
   })
 
+  it('相对时间超过 7 天按本地时区回退绝对日期', () => {
+    const now = new Date('2026-10-19T12:00:00.000Z')
+    const iso = '2026-10-10T20:30:00.000Z'
+    // 期望值随运行环境时区变化：与 displayTimestamp 同口径（本地偏移平移后取日期）
+    const shiftedMs = Date.parse(iso) + localTimezoneOffsetMinutes(now) * 60_000
+    const expected = new Date(shiftedMs).toISOString().slice(0, 10)
+    expect(displayRelativeTime(iso, now)).toBe(expected)
+  })
+
   it('模型列表逗号拼接，空列表给占位符', () => {
     expect(displayModels(['a', 'b'])).toBe('a, b')
     expect(displayModels([])).toBe('-')
