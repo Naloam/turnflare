@@ -49,8 +49,14 @@ interface GroupAccumulator {
   readonly requestCount: number
 }
 
-/** 项目分组额外要数会话数 */
-interface ProjectAccumulator extends GroupAccumulator {
+/**
+ * 项目分组的累加器：按会话身份键去重计数。
+ * 契约（@turnflare/contracts 的 ProjectStats）不暴露 requestCount，
+ * 所以这里不按 turn 计数——真要数也必须与 byModel / 侧链同口径（只数有 usage 的 turn）。
+ */
+interface ProjectAccumulator {
+  readonly usage: TokenUsage
+  readonly cost: CostBreakdown
   readonly sessionKeys: readonly string[]
 }
 
@@ -61,7 +67,8 @@ const EMPTY_GROUP: GroupAccumulator = Object.freeze({
 })
 
 const EMPTY_PROJECT: ProjectAccumulator = Object.freeze({
-  ...EMPTY_GROUP,
+  usage: emptyUsage(),
+  cost: zeroCost(),
   sessionKeys: [],
 })
 
@@ -340,11 +347,10 @@ function buildProjectStats(
       continue
     }
     const previous = groups.get(entry.projectSlug) ?? EMPTY_PROJECT
-    const totals = turns.reduce<GroupAccumulator>(
+    const totals = turns.reduce<Pick<ProjectAccumulator, 'usage' | 'cost'>>(
       (accumulator, turn) => ({
         usage: addUsage(accumulator.usage, turn.usage ?? emptyUsage()),
         cost: addCost(accumulator.cost, turnCost(turn, calculator)),
-        requestCount: accumulator.requestCount + 1,
       }),
       previous,
     )
