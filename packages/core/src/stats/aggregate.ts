@@ -390,8 +390,12 @@ function findActivityAt(turns: readonly Turn[], isFirst: boolean): string | null
   return bestTimestamp
 }
 
-/** 成本降序；成本相同时按名称升序，保证同样输入永远得到同样顺序 */
-function compareByCostThenName<T extends GroupAccumulator>(
+/**
+ * 成本降序；成本相同时按名称升序，保证同样输入永远得到同样顺序。
+ * 约束只取实际消费的 cost 字段：byModel（GroupAccumulator）与
+ * byProject（ProjectAccumulator，无 requestCount）都能排序。
+ */
+function compareByCostThenName<T extends { readonly cost: CostBreakdown }>(
   left: readonly [string, T],
   right: readonly [string, T],
 ): number {
