@@ -49,8 +49,14 @@ interface GroupAccumulator {
   readonly requestCount: number
 }
 
-/** 项目分组额外要数会话数 */
-interface ProjectAccumulator extends GroupAccumulator {
+/**
+ * 项目分组的累加器：按会话身份键去重计数。
+ * 契约（@turnflare/contracts 的 ProjectStats）不暴露 requestCount，
+ * 所以这里不按 turn 计数——真要数也必须与 byModel / 侧链同口径（只数有 usage 的 turn）。
+ */
+interface ProjectAccumulator {
+  readonly usage: TokenUsage
+  readonly cost: CostBreakdown
   readonly sessionKeys: readonly string[]
 }
 
@@ -61,7 +67,8 @@ const EMPTY_GROUP: GroupAccumulator = Object.freeze({
 })
 
 const EMPTY_PROJECT: ProjectAccumulator = Object.freeze({
-  ...EMPTY_GROUP,
+  usage: emptyUsage(),
+  cost: zeroCost(),
   sessionKeys: [],
 })
 
@@ -340,11 +347,10 @@ function buildProjectStats(
       continue
     }
     const previous = groups.get(entry.projectSlug) ?? EMPTY_PROJECT
-    const totals = turns.reduce<GroupAccumulator>(
+    const totals = turns.reduce<Pick<ProjectAccumulator, 'usage' | 'cost'>>(
       (accumulator, turn) => ({
         usage: addUsage(accumulator.usage, turn.usage ?? emptyUsage()),
         cost: addCost(accumulator.cost, turnCost(turn, calculator)),
-        requestCount: accumulator.requestCount + 1,
       }),
       previous,
     )
@@ -384,8 +390,12 @@ function findActivityAt(turns: readonly Turn[], isFirst: boolean): string | null
   return bestTimestamp
 }
 
-/** 成本降序；成本相同时按名称升序，保证同样输入永远得到同样顺序 */
-function compareByCostThenName<T extends GroupAccumulator>(
+/**
+ * 成本降序；成本相同时按名称升序，保证同样输入永远得到同样顺序。
+ * 约束只取实际消费的 cost 字段：byModel（GroupAccumulator）与
+ * byProject（ProjectAccumulator，无 requestCount）都能排序。
+ */
+function compareByCostThenName<T extends { readonly cost: CostBreakdown }>(
   left: readonly [string, T],
   right: readonly [string, T],
 ): number {

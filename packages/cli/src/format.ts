@@ -38,7 +38,13 @@ export function displayTimestamp(iso: string | null, timezoneOffsetMinutes: numb
 
 /** 相对时间；缺失时给占位符 */
 export function displayRelativeTime(iso: string | null, now?: Date): string {
-  return iso === null || iso === '' ? UNKNOWN : relativeTime(iso, now)
+  if (iso === null || iso === '') {
+    return UNKNOWN
+  }
+  const at = now ?? new Date()
+  // 超过 7 天 core 会退化成绝对日期；displayTimestamp 用的是本地时区，
+  // 这里也必须传本地偏移，否则同一行会在表格里显示成两个不同的日子
+  return relativeTime(iso, at, localTimezoneOffsetMinutes(at))
 }
 
 /** 模型列表：一场会话可能混用多个模型，表格里合并成一格 */

@@ -77,6 +77,13 @@ describe('relativeTime', () => {
     expect(relativeTime('2026-10-01T12:00:00.000Z', NOW)).toBe('2026-10-01')
   })
 
+  test('绝对日期回退按时区偏移计算', () => {
+    // UTC+8 的用户在本地 10-11 凌晨 04:30 的会话，不应显示成 UTC 的 10-10
+    expect(relativeTime('2026-10-10T20:30:00.000Z', NOW, 480)).toBe('2026-10-11')
+    expect(relativeTime('2026-10-10T20:30:00.000Z', NOW, 0)).toBe('2026-10-10')
+    expect(relativeTime('2026-10-10T20:30:00.000Z', NOW, -300)).toBe('2026-10-10')
+  })
+
   test('非法输入返回 "-"', () => {
     expect(relativeTime('not-a-date', NOW)).toBe('-')
     expect(relativeTime('', NOW)).toBe('-')

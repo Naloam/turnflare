@@ -82,8 +82,19 @@ export function formatDurationPrecise(ms: number): string {
   return `${minutes}:${pad2(seconds)}`
 }
 
-/** 中文相对时间：3 分钟前 / 2 小时前 / 昨天 / 3 天前 / 2026-10-01 */
-export function relativeTime(iso: string, now: Date = new Date()): string {
+/**
+ * 中文相对时间：3 分钟前 / 2 小时前 / 昨天 / 3 天前 / 2026-10-01。
+ *
+ * 超过阈值的天数退化为绝对日期，日期按 `timezoneOffsetMinutes` 平移后的
+ * 本地时区计算；默认 0（UTC）保持既有行为。web 端的同名逻辑
+ * （`packages/web/src/lib/format.ts`）已经按本地时区回退，这里对齐，
+ * 避免 CLI 与 web 对同一时刻显示两个不同的日子。
+ */
+export function relativeTime(
+  iso: string,
+  now: Date = new Date(),
+  timezoneOffsetMinutes = 0,
+): string {
   const target = toEpochMs(iso)
   if (target === null) {
     return NOT_AVAILABLE
@@ -107,7 +118,9 @@ export function relativeTime(iso: string, now: Date = new Date()): string {
 
   const days = Math.floor(absoluteDelta / MS_PER_DAY)
   if (days >= RELATIVE_DATE_THRESHOLD_DAYS) {
-    return formatDate(iso, 0)
+    // 这里必须走调用方给的时区而不是写死 0（UTC）：同一块屏幕上的其它
+    // 日期都用本地偏移，只有一个用 UTC 会让同一个时刻显示成两个不同的日子
+    return formatDate(iso, timezoneOffsetMinutes)
   }
   if (days === 1) {
     return future ? '明天' : '昨天'
