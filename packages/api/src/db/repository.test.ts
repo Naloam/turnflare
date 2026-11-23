@@ -575,6 +575,36 @@ describe('grouped statistics', () => {
     expect(buckets.map((bucket) => bucket.requestCount)).toEqual([3, 1])
   })
 
+  it('shifts bucket boundaries by a timezone offset (hour granularity)', () => {
+    // Arrange
+    const repo = openRepo()
+    seedTwoProjects(repo)
+
+    // Act
+    const buckets = repo.getTimeline({ granularity: 'hour', offsetMinutes: 480 })
+
+    // Assert：+8 下同一时刻落在本地小时的桶键上（16/17/09 而非 08/09/01）
+    expect(buckets.map((bucket) => bucket.bucket)).toEqual([
+      '2026-10-19T16:00:00Z',
+      '2026-10-19T17:00:00Z',
+      '2026-10-20T09:00:00Z',
+    ])
+    expect(buckets.map((bucket) => bucket.requestCount)).toEqual([2, 1, 1])
+  })
+
+  it('moves a turn across the day boundary under a negative offset', () => {
+    // Arrange
+    const repo = openRepo()
+    seedTwoProjects(repo)
+
+    // Act：-8h 把 2026-10-20T01:00Z 拉回 10-19 的本地日
+    const buckets = repo.getTimeline({ granularity: 'day', offsetMinutes: -480 })
+
+    // Assert
+    expect(buckets.map((bucket) => bucket.bucket)).toEqual(['2026-10-19'])
+    expect(buckets.map((bucket) => bucket.requestCount)).toEqual([4])
+  })
+
   it('filters the timeline by project and by time window', () => {
     // Arrange
     const repo = openRepo()

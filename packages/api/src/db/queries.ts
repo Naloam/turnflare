@@ -614,21 +614,28 @@ export function buildTimelineFilter(query: TimelineQuery): TimelineFilter {
 }
 
 /**
- * 分桶表达式。
+ * 分桶表达式（带一个 `?` 绑定参数：分钟偏移修饰符）。
  *
  * 桶键格式与 core 的 bucketByHour / bucketByDay 完全一致（`YYYY-MM-DDTHH:00:00Z`
- * 与 `YYYY-MM-DD`），这样 API 时间线与 core 直接算出来的曲线可以直接对比。
- * 代价是分桶按 UTC 进行：schema 明确"不在 DB 层做时区转换"，本地时区由展示层负责。
+ * 与 `YYYY-MM-DD`）。默认偏移 0 时输出与旧的纯 UTC 切片**字节一致**
+ * （datetime(x, '+0 minutes') 截断毫秒，不影响前 13 位）；
+ * 传入调用方时区偏移后，日界落在该时区的本地午夜而非 UTC 午夜。
  */
 function resolveBucketExpression(granularity: TimelineQuery['granularity']): string {
   switch (granularity) {
     case 'hour':
-      return "substr(turns.timestamp, 1, 13) || ':00:00Z'"
+      return "replace(substr(datetime(turns.timestamp, ?), 1, 13), ' ', 'T') || ':00:00Z'"
     case 'day':
-      return 'substr(turns.timestamp, 1, 10)'
+      return 'substr(datetime(turns.timestamp, ?), 1, 10)'
     default:
       throw new Error(`不支持的时间粒度：${String(granularity)}`)
   }
+}
+
+/** 分钟偏移 → SQL datetime 修饰符；undefined 视为 0（历史行为不变） */
+function formatOffsetModifier(offsetMinutes: number | undefined): string {
+  const minutes = offsetMinutes ?? 0
+  return minutes >= 0 ? `+${minutes} minutes` : `${minutes} minutes`
 }
 
 /** 桶键长度下界：短于该长度的 timestamp 拼不出完整桶键 */
@@ -668,7 +675,7 @@ export function buildTimelineStatement(query: TimelineQuery): TimelineStatement 
     GROUP BY bucket, model, speed
     ORDER BY bucket ASC
   `,
-    params: filter.params,
+    params: [formatOffsetModifier(query.offsetMinutes), ...filter.params],
   }
 }
 

@@ -141,6 +141,7 @@ const timelineQuerySchema = z.object({
   since: optionalTimestamp.optional(),
   until: optionalTimestamp.optional(),
   project: z.string().trim().min(MIN_SLUG_LENGTH).optional(),
+  offsetMinutes: z.coerce.number().int().min(-840).max(840).optional(),
 })
 
 export function parseTimelineQuery(raw: unknown): ParseResult<TimelineQuery> {
@@ -148,7 +149,7 @@ export function parseTimelineQuery(raw: unknown): ParseResult<TimelineQuery> {
   if (!result.ok) {
     return result
   }
-  const { granularity, since, until, project } = result.value
+  const { granularity, since, until, project, offsetMinutes } = result.value
   return {
     ok: true,
     value: {
@@ -156,6 +157,7 @@ export function parseTimelineQuery(raw: unknown): ParseResult<TimelineQuery> {
       ...(since === undefined ? {} : { since }),
       ...(until === undefined ? {} : { until }),
       ...(project === undefined ? {} : { project }),
+      ...(offsetMinutes === undefined ? {} : { offsetMinutes }),
     },
   }
 }

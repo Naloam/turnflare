@@ -108,6 +108,12 @@ export interface TimelineQuery {
   readonly since?: string
   readonly until?: string
   readonly project?: string
+  /**
+   * Bucket-boundary timezone shift in minutes (positive = east of UTC),
+   * clamped to ±840 by HTTP validation. Undefined means 0 (UTC days),
+   * which preserves the historical behavior of every existing caller.
+   */
+  readonly offsetMinutes?: number
 }
 
 export interface ScanRequest {
